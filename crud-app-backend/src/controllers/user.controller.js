@@ -1,0 +1,158 @@
+import crypto  from 'crypto';
+import userModel from "../models/user.model.js";
+import asyncHandler from "express-async-handler";
+import ApiResponse from "../utils/ApiResponse.util.js";
+import CustomError from "../utils/CustomError.util.js";
+import { generateToken } from "../utils/jwt.util.js";
+import { sendEmail } from "../utils/nodemailer.util.js";
+
+// register user
+export const userRegister = asyncHandler(async (req, res, next) => {
+  const { username, email, password, contactNumber } = req.body;
+
+  const existingUser = await userModel.findOne({ email });
+  if (existingUser) {
+    return next(new CustomError(400, "User already exists"));
+  }
+
+  // create user
+  const newUser = new userModel({
+    username,
+    email,
+    password,
+    contactNumber,
+  });
+
+  let emailVerificationToken= newUser.generateEmailVerificationToken();
+  await newUser.save();
+
+  let verification_url = `http://localhost:5173/email-verify/${emailVerificationToken}`
+
+//! send a mail -->
+  await sendEmail(
+    email,
+    "Email Verification",
+    "Sample Text",
+    `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px; background-color: #f9f9f9;">
+    <h2 style="color: #333; text-align: center;">Verify Your Email</h2>
+    <p style="font-size: 16px; color: #555;">
+      Hi, <strong>${email}</strong>!<br/>
+      Thank you for registering. Please verify your email address by clicking the button below.
+    </p>
+
+    <div style="text-align: center; margin: 30px 0;">
+      <a href="${verification_url}" 
+         style="padding: 12px 25px; background-color: #1d4ed8; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+         Verify Email
+      </a>
+    </div>
+
+    <p style="font-size: 14px; color: #888; text-align: center;">
+      Or copy this token manually if the button doesn't work: <br/>
+      <strong>${emailVerificationToken}</strong>
+    </p>
+
+    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;"/>
+    <p style="font-size: 12px; color: #999; text-align: center;">
+      This verification link will expire in 1 hour. If you did not request this email, please ignore it.
+    </p>
+  </div>`
+  );
+
+  new ApiResponse(201, "User registered successfully", newUser).send(res);
+});
+//~ http://localhost:9000/api/user/verify-email/2723f7db79d7e5cc92c42e4da2a18132e505e7a64a3e3dbbb040271e6b002a01
+
+//verifyEmail
+export const verifyEmail = asyncHandler(async (req,res,next)=>{
+ let { emailToken } = req.params;
+  let hashedEmailToken = crypto
+    .createHash("sha256")
+    .update(emailToken)
+    .digest("hex");
+
+    let user = await userModel.findOne({
+      emailVerificationToken: hashedEmailToken,
+      emailVerificationTokenExpiry:{ $gt: Date.now()},
+    });
+    if(!user)next(new CustomError(400, "token Expired"))
+
+    if(user.isVerified) return next(new CustomError(400, "user already verified"));
+
+    user.isVerified = true;
+    user.emailVerificationToken=undefined;  
+    user.emailVerificationTokenExpiry= undefined;
+    await user.save();
+
+    new ApiResponse(200, "email verified successfully").send(res);
+
+});
+
+// login user
+export const loginUser = asyncHandler(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  const existingUser = await userModel.findOne({ email });
+
+  if (!existingUser) {
+    return next(new CustomError(400, "user not found "));
+  }
+  // 2. Compare password (IMPORTANT)
+  const isMatch = await existingUser.comparePassword(password);
+  if (!isMatch) {
+    throw new CustomError(400, "Invalid  password");
+  }
+
+  let token = generateToken(existingUser._id);
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: false, // localhost
+    sameSite: "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  console.log("cookies sent to client ", req.cookies);
+
+  new ApiResponse(201, "user logged in successfully", existingUser).send(res);
+});
+
+// current User
+//~ this is for frontend --> check the success, if true means logged in, else not logged in then redirect client to login page or home page
+export const currentUser = asyncHandler(async (req, res) => {
+  if (!req.user) return res.status(401).json({ success: false });
+  res.json({ success: true, user: req.user });
+});
+
+// logOut user
+export const logoutUser = asyncHandler(async (req, res, next) => {
+  res.clearCookie("token");
+  new ApiResponse(201, "user logged out successfully").send(res);
+});
+
+
+// update User
+export const updateProfile = asyncHandler(async(req,res,next)=>{
+  const updateUser = await userModel.findByIdAndUpdate(
+    req.user._id,
+    req.body,
+    {
+      new:true,
+      runValidators:true,
+    }
+  );
+  if(!updateUser)next (new CustomError(404,"user not found "));
+  new ApiResponse(201, "user updated successfully", updateUser).send(res);
+})
+
+// update Password
+export const updatePassword = asyncHandler(async(req, res,next)=>{
+
+const existingUser = await userModel.findById(req.user._id)
+
+
+existingUser.password = req.body.password;
+await existingUser.save();
+
+new ApiResponse(200, "password updated successfully").send(res);
+  
+});
