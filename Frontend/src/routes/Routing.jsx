@@ -4,6 +4,8 @@ import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import SignupPage from "../pages/SignupPage";
 import EmailVerify from "../pages/EmailVerify";
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 
 
 
@@ -24,5 +26,13 @@ export const myRoute = createBrowserRouter([
   {
     path: "/email-verify/:token",
     element: <EmailVerify />,
-  }
+  },
+   {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+   {
+    path: "/reset-password",
+    element: <ResetPassword/>
+  },
 ]);
