@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { api } from "../axios/axiosInstance";
-import SignupPage from './SignupPage';
+import SignupPage from "./SignupPage";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      const res = await api.post("/login",formData,{ withCredentials: true });
+      const res = await api.post("/login", formData, { withCredentials: true });
       console.log("✅ Login response:", res.data); // Add this log
       await fetchUser();
       console.log("✅ After fetchUser"); // Add this log
@@ -89,13 +89,13 @@ const LoginPage = () => {
               className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold text-lg hover:bg-indigo-700 transition-all"
             >
               Login
-            </button><Link
-  to="/forgot-password"
-  className="text-sm text-blue-600 hover:underline block text-right"
->
-  Forgot Password?
-</Link>
-
+            </button>
+            <Link
+              to="/forgot-password"
+              className="text-sm text-blue-600 hover:underline block text-right"
+            >
+              Forgot Password?
+            </Link>
           </form>
 
           {/* Login Redirect */}
