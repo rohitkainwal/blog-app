@@ -88,6 +88,33 @@ export const verifyEmail = asyncHandler(async (req,res,next)=>{
 
 });
 
+export const resendEmailVerificationLink = asyncHandler(async(req,res,next)=>{
+  const {email} = req.body;
+   if (!email) {
+    return next(new CustomError(400, "Email is required"));
+  }
+  
+  let existingUser = await userModel.findOne({email});
+
+  if(existingUser.isVerified){
+   return next(new CustomError(400, "email already verified"));
+  }
+
+  let emailVerificationToken = existingUser.generateEmailVerificationToken();
+  await existingUser.save();
+
+  let verification_url = `http://localhost:5173/email-verify/${emailVerificationToken}`;
+
+  //! send a mail -->
+    await sendEmail(
+      email,
+      "Email Verification",
+      "Resend Verification Link",
+      `<h1> this is for verification</h1> <a href="${verification_url}">Click Here</a> <h3> ${emailVerificationToken} </h3>`
+    );
+  new ApiResponse(200, "Email Verification Link Sent Successfully").send(res);
+})
+
 // login user
 export const loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;

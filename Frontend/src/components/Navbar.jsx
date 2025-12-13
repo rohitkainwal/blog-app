@@ -1,11 +1,10 @@
+import ProfileDropdown from "./ProfileDropdown";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FaPowerOff  } from "react-icons/fa";
+import { FaPowerOff, FaEdit, FaBookReader } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
-import ProfileDropdown from "./ProfileDropdown";
 import { api } from './../axios/axiosInstance';
-
 
 const Navbar = () => {
   const { pathname } = useLocation();
@@ -24,61 +23,97 @@ const Navbar = () => {
   };
 
   return (
-    <header className="bg-green-100 flex justify-between items-center h-20 px-8 shadow-lg">
+    <header className="bg-gradient-to-r from-green-100 via-emerald-100 to-green-100 flex justify-between items-center h-24 px-10 shadow-xl border-b-2 border-green-200 sticky top-0 z-50 backdrop-blur-sm">
       <Link to="/">
-        <div className="font-extrabold text-2xl text-highlight tracking-wide">
-          Goal Street
+        <div className="flex items-center gap-3 group cursor-pointer">
+          <div className="w-12 h-12 bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+            <FaBookReader className="text-white text-2xl" />
+          </div>
+          <div>
+            <div className="font-extrabold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600 tracking-wide">
+              WriteHub
+            </div>
+            <div className="text-xs text-gray-600 font-medium -mt-1">Share Your Story</div>
+          </div>
         </div>
       </Link>
 
       {pathname !== "/login" && pathname !== "/signup" && (
-        <nav className="flex gap-10 font-bold text-highlight uppercase">
-          <Link to="/">Home</Link>
-          <Link to="/trending">Trending</Link>
-          <Link to="/about">About</Link>
+        <nav className="flex gap-8 font-bold text-green-700 uppercase">
+          <Link 
+            to="/" 
+            className={`hover:text-emerald-600 transition-colors duration-200 hover:scale-105 transform relative ${pathname === "/" ? "text-emerald-600" : ""}`}
+          >
+            Home
+            {pathname === "/" && (
+              <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full"></div>
+            )}
+          </Link>
+          <Link 
+            to="/trending" 
+            className={`hover:text-emerald-600 transition-colors duration-200 hover:scale-105 transform relative ${pathname === "/trending" ? "text-emerald-600" : ""}`}
+          >
+            Trending
+            {pathname === "/trending" && (
+              <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full"></div>
+            )}
+          </Link>
+          <Link 
+            to="/about" 
+            className={`hover:text-emerald-600 transition-colors duration-200 hover:scale-105 transform relative ${pathname === "/about" ? "text-emerald-600" : ""}`}
+          >
+            About
+            {pathname === "/about" && (
+              <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full"></div>
+            )}
+          </Link>
         </nav>
       )}
 
       <div className="flex gap-4 items-center">
         {user ? (
           <>
-            <div className="flex items-center gap-3 px-3 py-2  bg-green-200 rounded-lg hover:bg-green-300 transition-colors ">
+            <Link to="/write">
+              <button className="hidden md:flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
+                <FaEdit size={16} />
+                Write
+              </button>
+            </Link>
+
+            <div className="flex items-center gap-3 px-4 py-2.5 bg-gradient-to-r from-green-200 to-emerald-200 rounded-2xl hover:from-green-300 hover:to-emerald-300 transition-all duration-300 shadow-lg hover:shadow-xl border border-green-300">
               <img
                 src={
                   user.avatar ||
                   "https://api.dicebear.com/7.x/avataaars/svg?seed=User"
                 }
-                alt={user.name}
-                className="w-10 h-10 rounded-full border-2 border-green-400"
+                alt={user.username}
+                className="w-11 h-11 rounded-full border-3 border-white shadow-md"
               />
               <div className="hidden md:block text-left">
-                <p className="text-sm font-semibold text-gray-800">
+                <p className="text-sm font-bold text-gray-800">
                   {user.username}
                 </p>
-                <p className="text-xs text-gray-500">{user.email}</p>
+                <p className="text-xs text-gray-600">{user.email}</p>
               </div>
               <button
-              onClick={handleLogout}
-              className="text-white bg-red-500 hover:bg-red-600 p-2 rounded-full shadow transition flex items-center"
-            >
-              <FaPowerOff size={16} />
-            </button>
+                onClick={handleLogout}
+                className="text-white bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 p-2.5 rounded-full shadow-lg transition-all duration-300 flex items-center hover:scale-110 transform"
+              >
+                <FaPowerOff size={16} />
+              </button>
                
-            <ProfileDropdown/>
-
+              <ProfileDropdown/>
             </div>
-
-            
           </>
         ) : (
           <>
             <Link to="/login">
-              <button className="px-5 py-2 bg-black text-white rounded-lg">
+              <button className="px-6 py-3 bg-gradient-to-r from-gray-800 to-black text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 transform">
                 Login
               </button>
             </Link>
             <Link to="/signup">
-              <button className="px-5 py-2 bg-accent text-primary rounded-lg">
+              <button className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 transform">
                 Signup
               </button>
             </Link>

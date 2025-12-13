@@ -1,8 +1,8 @@
+import EditProfileModel from "./EditProfileModel";
+import EditPasswordModel from "./EditPasswordModel";
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { FaAngleDown, FaEdit } from "react-icons/fa";
-import EditProfileModel from "./EditProfileModel";
-import EditPasswordModel from "./EditPasswordModel";
 
 const ProfileDropdown = () => {
   const { user } = useContext(AuthContext);
@@ -22,7 +22,7 @@ const ProfileDropdown = () => {
 
         {open && (
       <div className="w-72 bg-white absolute top-14 right-1 shadow-2xl p-5 rounded-2xl border border-gray-200">
-        <div className="absolute top-3 right-3 cursor-pointer text-gray-600 hover:text-gray-800">
+        <div className="absolute top-5 right-3 cursor-pointer text-gray-600 hover:text-gray-800">
             <FaEdit size={18} onClick={()=> setShowEditModel(true)}/>
           </div>
 

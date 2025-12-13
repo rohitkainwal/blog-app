@@ -10,34 +10,65 @@ import {
 import { api } from "../axios/axiosInstance";
 import toast from "react-hot-toast";
 
-
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const {token} = useParams();
+  const { token } = useParams();
+
+  const validatePassword = () => {
+   if (!newPassword || !confirmPassword) {
+      toast.error("Both password fields are required");
+      return false;
+    }
+    
+    if (newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return false;
+    }
+    
+    if (!/(?=.*[a-z])/.test(newPassword)) {
+      toast.error("Password must contain at least one lowercase letter");
+      return false;
+    }
+    
+    if (!/(?=.*[A-Z])/.test(newPassword)) {
+      toast.error("Password must contain at least one uppercase letter");
+      return false;
+    }
+    
+    if (!/(?=.*\d)/.test(newPassword)) {
+      toast.error("Password must contain at least one number");
+      return false;
+    }
+    
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return false;
+    }
+    
+    return true;
+  };
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!newPassword || !confirmPassword) {
-      toast.error("password required");
-    }
-    if(newPassword !== confirmPassword){
-      toast.error("password not matched")
+    if (!validatePassword()) {
+      return;
     }
 
     try {
-      const res = await api.post(`reset-password/${token}`,  {
-        password: newPassword
-      })
-      console.log(res,"response hitteed");
-      toast.success(`password reset successfully ${res.data.message}`)
-            
+      const res = await api.post(`reset-password/${token}`, {
+        password: newPassword,
+      });
+      console.log(res, "response hitteed");
+      toast.success(`password reset successfully ${res.data.message}`);
 
       setSubmitted(true);
     } catch (error) {
-      console.log("error in reset password ")
+      console.log("error in reset password ");
       toast.error(error.response?.data?.message, "password reset failed");
     }
   };
@@ -163,5 +194,6 @@ const ResetPassword = () => {
     </div>
   );
 };
+
 
 export default ResetPassword;

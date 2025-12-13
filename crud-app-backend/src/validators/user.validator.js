@@ -19,3 +19,7 @@ export const forgotPasswordSchema = joi.object({
 export const resetPasswordSchema = joi.object({
     password: joi.string().min(5).max(50).required(),
 });     
+
+export const resendEmailVerificationLinkSchema = joi.object({
+  email: joi.string().min(5).max(50).required().email(),
+});
