@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
+import { api } from "../axios/axiosInstance";
 import toast from "react-hot-toast";
 import { FaUser, FaEnvelope, FaLock, FaPhone, FaCheckCircle } from "react-icons/fa";
 
@@ -35,10 +36,7 @@ const SignupPage = () => {
       return;
     }
     try {
-      const res = await axios.post(
-        "http://localhost:4000/api/user/register",
-        newUser
-      );
+      const res = await api.post("/user/register",newUser);
 
       toast.success(`✅ ${res.data.message}`);
 

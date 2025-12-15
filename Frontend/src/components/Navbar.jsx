@@ -13,7 +13,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await api.post("/logout",{},{ withCredentials: true });
+      await api.post("/user/logout",{},{ withCredentials: true });
       toast.success("logout success");
       setUser(null);
       navigate("/login");

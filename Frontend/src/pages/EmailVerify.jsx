@@ -28,7 +28,7 @@ const EmailVerify = () => {
  
     try {
      
-      await api.post("/resend-email-link" , { email: formData.email });
+      await api.post("/user/resend-email-link" , { email: formData.email });
       toast.success("Verification email sent successfully!");
     } catch (error) {
       console.error("Resend error:", error);
@@ -40,7 +40,7 @@ const EmailVerify = () => {
 
   const verify = async () => {
     try {
-      const res = await api.get(`/verify-email/${token}`);
+      const res = await api.get(`/user/verify-email/${token}`);
       toast.success(`email verified successfully ${res.data.message}`);
       navigate("/login");
     } catch (error) {
@@ -55,8 +55,8 @@ const EmailVerify = () => {
 
   const handleLogout = async () => {
     try {
-      await api.post("/logout");
-      navigate("/login");
+      await api.post("/user/logout");
+      navigate("/user/login");
     } catch (error) {
       console.error("Logout error:", error);
     }}

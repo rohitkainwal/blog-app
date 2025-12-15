@@ -20,7 +20,7 @@ const EditProfileModel = ({onClose}) => {
 
     const handleEditProfile= async()=>{
     try {
-    const res= await api.patch("/updateProfile" , formData , {withCredentials:true}) 
+    const res= await api.patch("/user/updateProfile" , formData , {withCredentials:true}) 
     toast.success("profile updated successfully")
     setUser(res.data.user);
 
