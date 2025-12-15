@@ -11,7 +11,6 @@ const ProfileDropdown = () => {
   const [showPaaswordModel, setShowPasswordModel] =useState(false)
 
   
-
   return (
     <div className="relative">
       {/* <EditProfileModel/> */}
@@ -44,7 +43,7 @@ const ProfileDropdown = () => {
         <div className="space-y-3 text-sm">
           <div className="flex justify-between border-b pb-2">
             <span className="font-medium text-gray-600">ID:</span>
-            <span className="text-gray-800">{user._id}</span>
+            <span className="text-gray-800">{user.id}</span>
           </div>
 
            <div className="flex justify-between border-b pb-2">

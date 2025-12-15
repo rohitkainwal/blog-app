@@ -27,7 +27,7 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      const res = await api.post("/login", formData, { withCredentials: true });
+      const res = await api.post("/user/login", formData, { withCredentials: true });
       console.log("✅ Login response:", res.data);
       await fetchUser();
       console.log("✅ After fetchUser");

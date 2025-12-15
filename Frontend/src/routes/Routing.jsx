@@ -40,4 +40,9 @@ export const myRoute = createBrowserRouter([
     path: "/reset-password/:token",
     element: <ResetPassword/>
   },
+    {
+    path: "/reset-password/:token",
+    element: <ResetPassword/>
+  },
+
 ]);

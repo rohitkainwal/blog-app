@@ -21,7 +21,7 @@ const ForgotPassword = () => {
     }
 
     try {
-      const res = await api.post("/forgot-password", { email });
+      const res = await api.post("/user/forgot-password", { email });
       toast.success(res.data.message);
       
 

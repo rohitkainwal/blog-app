@@ -29,7 +29,7 @@
     }
 
   try {
-    await api.patch("/updatePassword", { password: newPassword } );
+    await api.patch("/user/updatePassword", { password: newPassword } );
 
     toast.success("password updated successfully")
     onClose();
