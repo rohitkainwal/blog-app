@@ -2,10 +2,27 @@ import postModel from "../models/post.model.js";
 import asyncHandler from "express-async-handler";
 import CustomError from "../utils/CustomError.util.js";
 import ApiResponse from "../utils/ApiResponse.util.js";
-
+import { deleteImage, uploadImage, } from "../utils/cloudinary.util.js";
+import { getURL } from "../utils/getURL.js";
 // create post
 export const createPost = asyncHandler(async (req, res, next) => {
   const { title, content } = req.body;
+
+  console.log("request body",req.body);
+console.log("request file ",req.file);
+//image buffer get
+const buffer = req.file.buffer;
+
+
+if (!req.file) {
+  return next(new CustomError(400, "Image is required"));
+}
+//buffer to baseurl 
+const imageURL = getURL(buffer, req.file.mimetype);
+
+//cloudinary upload
+
+const uploaded = await uploadImage(imageURL);
 
   if (!title || !content) {
     return next(new CustomError(400, "title and content required"));
@@ -13,8 +30,13 @@ export const createPost = asyncHandler(async (req, res, next) => {
   const newPost = new postModel({
     title,
     content,
+    image:{
+      url:uploaded.secure_url,
+      public_id:uploaded.public_id,
+    },
     author: req.user._id,
   });
+
 
   await newPost.save();
   new ApiResponse(200, "post created successfully", newPost).send(res);
