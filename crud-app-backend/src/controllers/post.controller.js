@@ -71,20 +71,40 @@ export const getPost = asyncHandler(async (req, res, next) => {
 //  edit blog
 
 export const editPost = asyncHandler(async (req, res, next) => {
-  const updatePost = await postModel.findByIdAndUpdate(
-    {
-      _id: req.params.id,
-      author: req.user._id,
-    },
-    req.body,
-    { new: true }
-  );
+const { title, content } = req.body;
+  const postId = req.params.id;
 
-  if (!updatePost) {
-    return next(new CustomError(400, "no post found for update"));
+  // 1️⃣ Find the existing post by ID and author
+  const existingPost = await postModel.findOne({ _id: postId, author: req.user._id });
+  if (!existingPost) return next(new CustomError(404, "Post not found"));
+
+  // 2️⃣ Update text fields if provided
+  if (title) existingPost.title = title;
+  if (content) existingPost.content = content;
+
+  // 3️⃣ Handle image update if new file uploaded
+  if (req.file) {
+    const bufferValue = req.file.buffer;
+    const imageURL = getURL(bufferValue, req.file.mimetype);
+
+    // Delete old image from Cloudinary
+    if (existingPost.image?.public_id) {
+      const resp = await deleteImage(existingPost.image.public_id);
+      if (resp.result !== "ok") return next(new CustomError(500, "Failed to delete old image"));
+    }
+
+    // Upload new image
+    const uploadedResp = await uploadImage(imageURL);
+    existingPost.image = {
+      url: uploadedResp.secure_url,
+      public_id: uploadedResp.public_id,
+    };
   }
 
-  new ApiResponse(200, "post updated successfully", updatePost).send(res);
+  // 4️⃣ Save the updated post
+  await existingPost.save();
+
+  new ApiResponse(200, "post updated successfully", existingPost).send(res);
 });
 
 // delete post
