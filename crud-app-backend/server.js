@@ -9,6 +9,8 @@ connectDB();
 app.listen(PORT, (err) => {
   try {
     console.log(`server is runnig at : ${PORT}`);
+    console.log("JWT_SECRET_KEY exists:", !!process.env.JWT_SECRET_KEY);
+    
   } catch (err) {
     console.log(err);
   }
