@@ -29,6 +29,8 @@ export const userRegister = asyncHandler(async (req, res, next) => {
   let verification_url = `http://localhost:5173/email-verify/${emailVerificationToken}`
 
 //! send a mail -->
+
+try {
   await sendEmail(
     email,
     "Email Verification",
@@ -58,6 +60,9 @@ export const userRegister = asyncHandler(async (req, res, next) => {
     </p>
   </div>`
   );
+} catch (error) {
+  console.error("Email sending failed:", error.message);
+}
 
   new ApiResponse(201, "User registered successfully", newUser).send(res);
 });
