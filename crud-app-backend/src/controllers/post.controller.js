@@ -8,8 +8,6 @@ import { getURL } from "../utils/getURL.js";
 export const createPost = asyncHandler(async (req, res, next) => {
   const { title, content } = req.body;
 
-  console.log("request body",req.body);
-console.log("request file ",req.file);
 //image buffer get
 const buffer = req.file.buffer;
 

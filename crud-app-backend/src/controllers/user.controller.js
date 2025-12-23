@@ -147,8 +147,6 @@ export const loginUser = asyncHandler(async (req, res, next) => {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
-  console.log("cookies sent to client ", req.cookies);
-
   new ApiResponse(201, "user logged in successfully", existingUser).send(res);
 });
 
