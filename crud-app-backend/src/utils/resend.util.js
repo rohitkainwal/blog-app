@@ -1,6 +1,11 @@
 import getResend from "../config/resend.config.js";
 
 export const sendEmail = async (to, subject, text, html) => {
+  if (!process.env.RESEND_API_KEY) {
+    console.error("❌ RESEND_API_KEY missing");
+    return;
+  }    
+  
   console.log("Sending email to:", to);
   
   try {
