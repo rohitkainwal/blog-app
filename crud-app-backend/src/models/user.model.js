@@ -32,20 +32,20 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
     //! for email
-    // emailVerificationToken: {
-    //   type: String,
-    // },
-    // emailVerificationTokenExpiry: {
-    //   type: Date,
-    // },
+    emailVerificationToken: {
+      type: String,
+    },
+    emailVerificationTokenExpiry: {
+      type: Date,
+    },
 
     // //! for password
-    // passwordResetToken: {
-    //   type: String,
-    // },
-    // passwordResetTokenExpiry: {
-    //   type: Date,
-    // },
+    passwordResetToken: {
+      type: String,
+    },
+    passwordResetTokenExpiry: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
@@ -81,39 +81,39 @@ userSchema.methods.comparePassword = async function (plainPassword) {
   return bcrypt.compare(plainPassword, this.password);
 };
 
-// userSchema.methods.generateEmailVerificationToken = function () {
+userSchema.methods.generateEmailVerificationToken = function () {
 
-//   try {
-//      const randomBytes = crypto.randomBytes(32).toString("hex");
+  try {
+     const randomBytes = crypto.randomBytes(32).toString("hex");
 
-//   this.emailVerificationToken = crypto
-//     .createHash("sha256") //? algorithm
-//     .update(randomBytes) //? data to be hashed
-//     .digest("hex"); //? op to be displayed
+  this.emailVerificationToken = crypto
+    .createHash("sha256") //? algorithm
+    .update(randomBytes) //? data to be hashed
+    .digest("hex"); //? op to be displayed
 
-//   this.emailVerificationTokenExpiry = Date.now() + 10 * 60 * 1000;
+  this.emailVerificationTokenExpiry = Date.now() + 10 * 60 * 1000;
 
-//   return randomBytes;
-//   } catch (error) {
-//     console.error("Error in generateEmailVerificationToken:", error);
-//     throw error;
-//   }
+  return randomBytes;
+  } catch (error) {
+    console.error("Error in generateEmailVerificationToken:", error);
+    throw error;
+  }
 
  
-// };
+};
 
-// userSchema.methods.generateResetPasswordToken = function () {
-//   const randomBytes = crypto.randomBytes(32).toString("hex");
+userSchema.methods.generateResetPasswordToken = function () {
+  const randomBytes = crypto.randomBytes(32).toString("hex");
 
-//   this.passwordResetToken = crypto
-//     .createHash("sha256")
-//     .update(randomBytes)
-//     .digest("hex");
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(randomBytes)
+    .digest("hex");
 
-//   this.passwordResetTokenExpiry = Date.now() + 10 * 60 * 1000;
+  this.passwordResetTokenExpiry = Date.now() + 10 * 60 * 1000;
 
-//   return randomBytes;
-// };
+  return randomBytes;
+};
 
 
 const userModel = mongoose.model("User", userSchema);
