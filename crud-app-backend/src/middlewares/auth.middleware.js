@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import userModel from "../models/user.model.js";
-import asyncHandler from "express-async-handler";
+import asyncHandler  from "express-async-handler";
 import CustomError from "../utils/CustomError.util.js";
 
 export const authenticate = asyncHandler(async (req, res, next) => {
@@ -11,11 +11,10 @@ export const authenticate = asyncHandler(async (req, res, next) => {
   }
 
   const decodeToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
-  
+  console.log("decode token", decodeToken);
 
   const user = await userModel.findById(decodeToken.id);
   console.log("user found in Database", user._id);
-  console.log("extrcted token", token);
 
   if (!user) {
     return next(new CustomError(401, "invalid session please login again"));

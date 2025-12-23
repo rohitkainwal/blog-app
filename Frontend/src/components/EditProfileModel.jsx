@@ -21,12 +21,11 @@ const EditProfileModel = ({ onClose }) => {
     try {
       const res = await api.patch(
         "/user/updateProfile",
-        formData,
-        { withCredentials: true }
+        formData
       );
 
       toast.success("Profile updated successfully");
-      setUser(res.data.user);
+      setUser(res.data.data);
       onClose();
     } catch (error) {
       toast.error(error.response?.data?.message || "Update failed");
