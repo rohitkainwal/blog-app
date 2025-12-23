@@ -4,7 +4,7 @@ import asyncHandler from "express-async-handler";
 import ApiResponse from "../utils/ApiResponse.util.js";
 import CustomError from "../utils/CustomError.util.js";
 import { generateToken } from "../utils/jwt.util.js";
-import { sendEmail } from "../utils/nodemailer.util.js";
+// import { sendEmail } from "../utils/nodemailer.util.js";
 
 // register user
 export const userRegister = asyncHandler(async (req, res, next) => {
