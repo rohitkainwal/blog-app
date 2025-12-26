@@ -3,9 +3,6 @@ import { useContext } from 'react';
 import { PostContext } from "../context/PostContext";
 import { Link } from 'react-router-dom';
 
-
-
-
 const PostCard = () => {
   const { posts } = useContext(PostContext);
 
@@ -24,37 +21,39 @@ const PostCard = () => {
   };
 
   return (
-    <div className="grid gap-6 p-6 grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
+    <div className="grid gap-4 md:gap-6 p-4 md:p-6 grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
       {posts.length === 0 ? (
-        <p className="text-gray-500 col-span-full text-center">
+        <p className="text-gray-500 col-span-full text-center py-12">
           No posts found
         </p>
       ) : ( 
        posts.map((post) => {
-  const { _id, title, content, createdAt, image, author } = post;
-  const { username } = author || {};
+          const { _id, title, content, createdAt, image, author } = post;
+          const { username } = author || {};
 
           return (
             <div key={_id}
-              className="w-full flex bg-gradient-to-br from-white to-green-50 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-green-200 hover:border-green-400 overflow-hidden group transform hover:-translate-y-1"
+              className="w-full flex flex-col sm:flex-row bg-gradient-to-br from-white to-green-50 rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-green-200 hover:border-green-400 overflow-hidden group transform hover:-translate-y-1"
             >
               {/* Image */}
-              <div className="relative w-56 flex-shrink-0 overflow-hidden rounded-l-2xl bg-gradient-to-br from-green-100 to-emerald-100">
-                {image?.url? (
+              <div className="relative w-full sm:w-48 md:w-56 h-48 sm:h-auto flex-shrink-0 overflow-hidden sm:rounded-l-2xl bg-gradient-to-br from-green-100 to-emerald-100">
+                {image?.url ? (
                   <img 
                     src={image.url} 
                     alt={title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 ) : (
-                  <span className="text-green-600 text-5xl">📝</span>
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-green-600 text-5xl md:text-6xl">📝</span>
+                  </div>
                 )}
               </div>
 
               {/* Content */}
-              <div className="p-6 space-y-3 flex-1 flex flex-col justify-between">
+              <div className="p-4 md:p-6 space-y-3 flex-1 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-2 mb-2">
+                  <div className="flex items-center gap-2 mb-2 flex-wrap">
                     <span className="px-3 py-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-full text-xs font-bold shadow-md">
                       Article
                     </span>
@@ -63,29 +62,30 @@ const PostCard = () => {
                     )}
                   </div>
 
-                  <h2 className="text-left text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-green-600 transition-colors duration-300 mb-2">
+                  <h2 className="text-left text-lg sm:text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-green-600 transition-colors duration-300 mb-2">
                     {title}
                   </h2>
 
-                  <p className="text-sm text-gray-600 line-clamp-3 text-left leading-relaxed mb-3">
+                  <p className="text-sm text-gray-600 line-clamp-2 sm:line-clamp-3 text-left leading-relaxed mb-3">
                     {content}
                   </p>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-green-100">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-green-100">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md">
+                    <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md flex-shrink-0">
                       {username ? username.charAt(0).toUpperCase() : 'U'}
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-gray-800">By {username || 'Unknown'}</p>
+                      <p className="text-sm font-semibold text-gray-800 truncate max-w-[150px] sm:max-w-none">
+                        By {username || 'Unknown'}
+                      </p>
                     </div>
                   </div>
 
-                  <Link to ={`/SinglePost/${_id}`}
-                 
-                  
-                    className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+                  <Link 
+                    to={`/SinglePost/${_id}`}
+                    className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
                   >
                     <span>Read More</span>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
